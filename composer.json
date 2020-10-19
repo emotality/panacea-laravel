@@ -1,0 +1,42 @@
+{
+    "name": "emotality/panacea-laravel",
+    "description": "A Laravel package for Panacea Mobile API to send SMSes.",
+    "type": "library",
+    "keywords": [
+        "laravel",
+        "panacea",
+        "panaceamobile",
+        "api"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/emotality/panacea-laravel",
+    "authors": [
+        {
+            "name": "Jean-Pierre Fourie",
+            "homepage": "https://emotality.com",
+            "email": "jp@emotality.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^6.2|^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Emotality\\Panacea\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Emotality\\Panacea\\PanaceaMobileServiceProvider"
+            ],
+            "aliases": {
+                "PanaceaMobile": "Emotality\\Panacea\\PanaceaMobile"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
