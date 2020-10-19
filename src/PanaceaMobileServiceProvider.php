@@ -19,9 +19,7 @@ class PanaceaMobileServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register any application services.
-     *
-     * @return void
+     * {@inheritDoc}
      */
     public function register()
     {

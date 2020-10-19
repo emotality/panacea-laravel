@@ -1,4 +1,4 @@
-# PanaceaMobile API
+# PanaceaMobile API for Laravel
 
 [![Packagist License](https://poser.pugx.org/emotality/panacea-laravel/license.png)](http://choosealicense.com/licenses/mit/)
 [![Latest Stable Version](https://poser.pugx.org/emotality/panacea-laravel/version.png)](https://packagist.org/packages/emotality/panacea-laravel)
@@ -15,6 +15,28 @@ Laravel package for [PanaceaMobile](https://www.panaceamobile.com) API.
 ```
 PANACEA_USERNAME="<your_panacea_username>"
 PANACEA_PASSWORD="<your_panacea_password>"
+```
+
+---
+
+Laravel 5.5+ will use the auto-discovery function but for Laravel 5.4 and lower, you will need to include the service provider & facade manually in `config/app.php`:
+
+```php
+'providers' => [
+    ...,
+    /*
+     * Package Service Providers...
+     */
+    Emotality\Panacea\PanaceaMobileServiceProvider::class,
+    ...,
+];
+
+...
+
+'aliases' => [
+    ...,
+    'PanaceaMobile' => Emotality\Panacea\PanaceaMobile::class,
+];
 ```
 
 ## Usage
