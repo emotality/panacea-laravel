@@ -14,7 +14,7 @@ class PanaceaMobileServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../config/panacea.php' => config_path('panacea.php'),
+            __DIR__.'/../config/panacea.php' => config_path('panacea.php'),
         ], 'config');
     }
 

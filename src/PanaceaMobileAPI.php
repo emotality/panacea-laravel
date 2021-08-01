@@ -36,9 +36,9 @@ class PanaceaMobileAPI
             'timeout'  => 15.0,
             'headers'  => [
                 'Content-Type' => 'application/json',
-                'Accept'       => 'application/json'
+                'Accept'       => 'application/json',
             ],
-            'verify' => config('panacea.ssl', true)
+            'verify'   => config('panacea.ssl', true),
         ]);
 
         $this->username = config('panacea.username');
@@ -48,12 +48,12 @@ class PanaceaMobileAPI
     /**
      * Send SMS to a single recipient.
      *
-     * @param string $recipient
-     * @param string $message
+     * @param  string  $recipient
+     * @param  string  $message
      * @return bool
      * @throws \Exception
      */
-    public function sms($recipient, $message)
+    public function sms(string $recipient, string $message)
     {
         return $this->sendSms($recipient, $message);
     }
@@ -61,12 +61,12 @@ class PanaceaMobileAPI
     /**
      * Send SMS to multiple recipients.
      *
-     * @param array $recipients
-     * @param string $message
+     * @param  array  $recipients
+     * @param  string  $message
      * @return array
      * @throws \Exception
      */
-    public function smsMany($recipients, $message)
+    public function smsMany(array $recipients, string $message)
     {
         $response = [];
 
@@ -80,15 +80,16 @@ class PanaceaMobileAPI
     /**
      * Handle API request.
      *
-     * @param string $recipient
-     * @param string $message
+     * @param  string  $recipient
+     * @param  string  $message
      * @return bool
      * @throws \Exception
      */
-    private function sendSms($recipient, $message)
+    private function sendSms(string $recipient, string $message)
     {
         if (strpos($recipient, '+') !== 0) {
-            throw new \Exception('Mobile number needs to start with a + sign, eg. +27');
+            throw new \Exception('Mobile number needs to be international! (Start with a + sign, eg. +27)');
+
             return false;
         }
 
@@ -97,7 +98,7 @@ class PanaceaMobileAPI
             'username' => $this->username,
             'password' => $this->password,
             'to'       => $recipient,
-            'text'     => $message
+            'text'     => $message,
         ];
 
         $response = $this->client->request('GET', $this->queryUri('/json', $parameters));
@@ -105,9 +106,9 @@ class PanaceaMobileAPI
         $json = json_decode($response->getBody());
 
         if (isset($json->status) && $json->status != 1) {
-            if (isset($json->details) && !empty($json->details)) {
+            if (isset($json->details) && ! empty($json->details)) {
                 $message = $json->details;
-            } else if (isset($json->message) && !empty($json->message)) {
+            } elseif (isset($json->message) && ! empty($json->message)) {
                 $message = $json->message;
             } else {
                 $message = 'Unknown error occurred.';
@@ -124,11 +125,11 @@ class PanaceaMobileAPI
     /**
      * Build query with parameters.
      *
-     * @param string $uri
-     * @param array $parameters
+     * @param  string  $uri
+     * @param  array  $parameters
      * @return string
      */
-    private function queryUri($uri, $parameters = [])
+    private function queryUri(string $uri, array $parameters = [])
     {
         if (count($parameters)) {
             return sprintf('%s?%s', $uri, http_build_query($parameters));

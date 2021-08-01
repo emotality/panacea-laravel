@@ -41,16 +41,10 @@ Laravel 5.5+ will use the auto-discovery function but for Laravel 5.4 and lower,
 
 ## Usage
 
-Import `PanaceaMobile` class:
-
-```php
-use Emotality\Panacea\PanaceaMobile;
-```
-
 #### Send SMS to a single recipient:
 
 ```php
-PanaceaMobile::sms('+27820000001', "1st Line\n2nd Line\n3rd Line");
+\PanaceaMobile::sms('+27820000001', "1st Line\n2nd Line\n3rd Line");
 ```
 
 Response will be a `bool`, `true` if successful, `false` if unsuccessful.
@@ -58,7 +52,7 @@ Response will be a `bool`, `true` if successful, `false` if unsuccessful.
 #### Send SMS to multiple recipients:
 
 ```php
-PanaceaMobile::smsMany(['+27820000001', '+27820000002'], "1st Line\n2nd Line\n3rd Line")
+\PanaceaMobile::smsMany(['+27820000001', '+27820000002'], "1st Line\n2nd Line\n3rd Line");
 ```
 
 Response will be an array where the keys are the recipients' numbers, the values will be booleans:
@@ -68,6 +62,31 @@ array:2 [▼
   "+27820000001" => true
   "+27820000002" => false
 ]
+```
+
+#### Notifications:
+
+```php
+namespace App\Notifications;
+
+use Emotality\Panacea\PanaceaChannel;
+use Emotality\Panacea\PanaceaMessage;
+use Illuminate\Notifications\Notification;
+
+class ExampleNotification extends Notification
+{
+    public function via($notifiable)
+    {
+        return [PanaceaChannel::class];
+    }
+    
+    public function toPanacea($notifiable) // Can also use toSms()
+    {
+        return (new PanaceaMessage())
+            ->to($notifiable->mobile) // Assuming $user->mobile
+            ->message("1st Line\n2nd Line\n3rd Line");
+    }
+}
 ```
 
 ## License
