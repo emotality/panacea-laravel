@@ -2,36 +2,46 @@
 
 namespace Emotality\Panacea;
 
-use GuzzleHttp\Client;
+use GuzzleHttp\Client as Http;
 
 class PanaceaMobileAPI
 {
     /**
-     * @var Client $client
+     * Guzzle HTTP client.
+     *
+     * @var \GuzzleHttp\Client $client
      */
     protected $client;
 
     /**
-     * @var string $url
+     * PanaceaMobile base API URL.
+     *
+     * @var string
      */
     protected $url = 'https://api.panaceamobile.com';
 
     /**
+     * PanaceaMobile login username.
+     *
      * @var string $username
      */
     protected $username;
 
     /**
+     * PanaceaMobile login password.
+     *
      * @var string $password
      */
     protected $password;
 
     /**
      * PanaceaMobile constructor.
+     *
+     * @return void
      */
     public function __construct()
     {
-        $this->client = new Client([
+        $this->client = new Http([
             'base_uri' => $this->url,
             'timeout'  => 15.0,
             'headers'  => [
@@ -53,7 +63,7 @@ class PanaceaMobileAPI
      * @return bool
      * @throws \Exception
      */
-    public function sms(string $recipient, string $message)
+    public function sms(string $recipient, string $message) : bool
     {
         return $this->sendSms($recipient, $message);
     }
@@ -66,7 +76,7 @@ class PanaceaMobileAPI
      * @return array
      * @throws \Exception
      */
-    public function smsMany(array $recipients, string $message)
+    public function smsMany(array $recipients, string $message) : array
     {
         $response = [];
 
@@ -85,7 +95,7 @@ class PanaceaMobileAPI
      * @return bool
      * @throws \Exception
      */
-    private function sendSms(string $recipient, string $message)
+    private function sendSms(string $recipient, string $message) : bool
     {
         if (strpos($recipient, '+') !== 0) {
             throw new \Exception('Mobile number needs to be international! (Start with a + sign, eg. +27)');
@@ -129,7 +139,7 @@ class PanaceaMobileAPI
      * @param  array  $parameters
      * @return string
      */
-    private function queryUri(string $uri, array $parameters = [])
+    private function queryUri(string $uri, array $parameters = []) : string
     {
         if (count($parameters)) {
             return sprintf('%s?%s', $uri, http_build_query($parameters));

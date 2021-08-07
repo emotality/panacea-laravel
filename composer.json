@@ -18,8 +18,10 @@
         }
     ],
     "require": {
-        "php": ">=7.1.0",
+        "php": ">=7.0.0",
         "ext-json": "*",
+        "illuminate/support": ">=5.5.0",
+        "illuminate/notifications": ">=5.5.0",
         "guzzlehttp/guzzle": "^6.2|^7.0"
     },
     "autoload": {

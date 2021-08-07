@@ -5,11 +5,11 @@ namespace Emotality\Panacea;
 class PanaceaMessage
 {
     /**
-     * SMS recipient.
+     * SMS recipients.
      *
-     * @var string $to
+     * @var array $to
      */
-    protected $to;
+    protected $to = [];
 
     /**
      * SMS message.
@@ -21,25 +21,40 @@ class PanaceaMessage
     /**
      * PanaceaMessage constructor.
      *
-     * @param  string|null  $to
+     * @param  string|array|null  $to
      * @param  string|null  $message
      * @return void
      */
-    public function __construct(string $to = null, string $message = null)
+    public function __construct($to = null, string $message = null)
     {
-        $this->to = $to;
+        if ($to) {
+            $this->to = is_array($to) ? $to : [$to];
+        }
         $this->message = $message;
     }
 
     /**
-     * Set SMS recipient.
+     * Add SMS recipient.
      *
      * @param  string  $to
      * @return $this
      */
     public function to(string $to)
     {
-        $this->to = $to;
+        $this->to[] = $to;
+
+        return $this;
+    }
+
+    /**
+     * Add many SMS recipients.
+     *
+     * @param  array  $to
+     * @return $this
+     */
+    public function toMany(array $to)
+    {
+        $this->to = array_merge($this->to, $to);
 
         return $this;
     }
@@ -58,21 +73,21 @@ class PanaceaMessage
     }
 
     /**
-     * Send SMS.
+     * Send SMS(es).
      *
      * @return void
      * @throws \Exception
      */
     public function send()
     {
-        if (! $this->to) {
-            throw new \Exception('SMS has no recipient address.');
+        if (! count($this->to)) {
+            throw new \Exception('SMS has no recipient(s) attached.');
         }
 
         if (! $this->message) {
             throw new \Exception('SMS message can\'t be empty.');
         }
 
-        \PanaceaMobile::sms($this->to, $this->message);
+        \PanaceaMobile::smsMany($this->to, $this->message);
     }
 }

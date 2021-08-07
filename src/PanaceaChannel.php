@@ -17,7 +17,7 @@ class PanaceaChannel
     {
         if (method_exists($notification, 'toPanacea')) {
             $notification->toPanacea($notifiable)->send();
-        } else if (method_exists($notification, 'toSms')) {
+        } elseif (method_exists($notification, 'toSms')) {
             $notification->toSms($notifiable)->send();
         } else {
             throw new \Exception('Method not found in Notification to send SMS.');
