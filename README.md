@@ -26,8 +26,9 @@ Laravel package for PanaceaMobile API.
 3. Add the following lines to your `.env` file:
 
 ```
-PANACEA_USERNAME="<your_panacea_username>"
-PANACEA_PASSWORD="<your_panacea_password>"
+PANACEA_USERNAME="<panacea_username>"
+PANACEA_PASSWORD="<panacea_password_or_api_key>"
+PANACEA_FROM="<from_name>" // Optional, but required for sending outside ZA
 ```
 
 ## Usage

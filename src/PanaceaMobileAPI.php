@@ -9,7 +9,7 @@ class PanaceaMobileAPI
     /**
      * Guzzle HTTP client.
      *
-     * @var \GuzzleHttp\Client $client
+     * @var \GuzzleHttp\Client
      */
     protected $client;
 
@@ -23,24 +23,34 @@ class PanaceaMobileAPI
     /**
      * PanaceaMobile login username.
      *
-     * @var string $username
+     * @var string
      */
     protected $username;
 
     /**
      * PanaceaMobile login password.
      *
-     * @var string $password
+     * @var string
      */
     protected $password;
 
     /**
+     * PanaceaMobile from number/name.
+     *
+     * @var string|null
+     */
+    protected $from = null;
+
+    /**
      * PanaceaMobile constructor.
      *
+     * @param  array|null  $config
      * @return void
      */
-    public function __construct()
+    public function __construct(array $config = null)
     {
+        $config = $config ?? config('panacea');
+
         $this->client = new Http([
             'base_uri' => $this->url,
             'timeout'  => 15.0,
@@ -48,11 +58,12 @@ class PanaceaMobileAPI
                 'Content-Type' => 'application/json',
                 'Accept'       => 'application/json',
             ],
-            'verify'   => config('panacea.ssl', true),
+            'verify'   => $config['ssl'] ?? true,
         ]);
 
-        $this->username = config('panacea.username');
-        $this->password = config('panacea.password');
+        $this->username = $config['username'] ?? null;
+        $this->password = $config['password'] ?? null;
+        $this->from = $config['from'] ?? null;
     }
 
     /**
@@ -60,12 +71,13 @@ class PanaceaMobileAPI
      *
      * @param  string  $recipient
      * @param  string  $message
+     * @param  string|null  $from
      * @return bool
      * @throws \Exception
      */
-    public function sms(string $recipient, string $message) : bool
+    public function sms(string $recipient, string $message, string $from = null) : bool
     {
-        return $this->sendSms($recipient, $message);
+        return $this->sendRequest($recipient, $message, $from);
     }
 
     /**
@@ -73,15 +85,16 @@ class PanaceaMobileAPI
      *
      * @param  array  $recipients
      * @param  string  $message
+     * @param  string|null  $from
      * @return array
      * @throws \Exception
      */
-    public function smsMany(array $recipients, string $message) : array
+    public function smsMany(array $recipients, string $message, string $from = null) : array
     {
         $response = [];
 
         foreach (array_unique($recipients) as $recipient) {
-            $response[$recipient] = $this->sendSms(strval($recipient), $message);
+            $response[$recipient] = $this->sendRequest(strval($recipient), $message, $from);
         }
 
         return $response;
@@ -92,21 +105,27 @@ class PanaceaMobileAPI
      *
      * @param  string  $recipient
      * @param  string  $message
+     * @param  string|null  $from
      * @return bool
      * @throws \Exception
      */
-    private function sendSms(string $recipient, string $message) : bool
+    private function sendRequest(string $recipient, string $message, string $from = null) : bool
     {
         if (strpos($recipient, '+') !== 0) {
-            throw new \Exception('Mobile number needs to be international! (Start with a + sign, eg. +27)');
+            $recipient = '+'.$recipient;
+        }
 
-            return false;
+        $from = $from ?? $this->from ?? null;
+
+        if ($from && ! ctype_alnum($from)) {
+            throw new \Exception('PanaceaMobile: The "from" field can only contain alpha numeric characters!');
         }
 
         $parameters = [
             'action'   => 'message_send',
             'username' => $this->username,
             'password' => $this->password,
+            'from'     => $from,
             'to'       => $recipient,
             'text'     => $message,
         ];
