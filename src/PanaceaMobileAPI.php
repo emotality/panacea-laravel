@@ -2,148 +2,114 @@
 
 namespace Emotality\Panacea;
 
-use GuzzleHttp\Client as Http;
-
 class PanaceaMobileAPI
 {
     /**
-     * Guzzle HTTP client.
+     * The PanaceaMobile API client.
      *
-     * @var \GuzzleHttp\Client
+     * @var \Illuminate\Http\Client\PendingRequest
      */
     protected $client;
 
     /**
-     * PanaceaMobile base API URL.
+     * The PanaceaMobile config.
      *
-     * @var string
+     * @var array
      */
-    protected $url = 'https://api.panaceamobile.com';
+    protected $config;
 
     /**
-     * PanaceaMobile login username.
+     * PanaceaMobileAPI constructor.
      *
-     * @var string
-     */
-    protected $username;
-
-    /**
-     * PanaceaMobile login password.
-     *
-     * @var string
-     */
-    protected $password;
-
-    /**
-     * PanaceaMobile from number/name.
-     *
-     * @var string|null
-     */
-    protected $from = null;
-
-    /**
-     * PanaceaMobile constructor.
-     *
-     * @param  array|null  $config
      * @return void
      */
-    public function __construct(array $config = null)
+    public function __construct()
     {
-        $config = $config ?? config('panacea');
+        $this->config = config('panacea') ?? [];
 
-        $this->client = new Http([
-            'base_uri' => $this->url,
-            'timeout'  => 15.0,
-            'headers'  => [
-                'Content-Type' => 'application/json',
-                'Accept'       => 'application/json',
-            ],
-            'verify'   => $config['ssl'] ?? true,
-        ]);
-
-        $this->username = $config['username'] ?? null;
-        $this->password = $config['password'] ?? null;
-        $this->from = $config['from'] ?? null;
-    }
-
-    /**
-     * Send SMS to a single recipient.
-     *
-     * @param  string  $recipient
-     * @param  string  $message
-     * @param  string|null  $from
-     * @return bool
-     * @throws \Exception
-     */
-    public function sms(string $recipient, string $message, string $from = null) : bool
-    {
-        return $this->sendRequest($recipient, $message, $from);
-    }
-
-    /**
-     * Send SMS to multiple recipients.
-     *
-     * @param  array  $recipients
-     * @param  string  $message
-     * @param  string|null  $from
-     * @return array
-     * @throws \Exception
-     */
-    public function smsMany(array $recipients, string $message, string $from = null) : array
-    {
-        $response = [];
-
-        foreach (array_unique($recipients) as $recipient) {
-            $response[$recipient] = $this->sendRequest(strval($recipient), $message, $from);
+        if ($this->hasCredentials()) {
+            $this->client = \Http::withOptions([
+                'base_uri'        => 'https://api.panaceamobile.com',
+                'debug'           => false,
+                'verify'          => true,
+                'version'         => 2.0,
+                'connect_timeout' => 30,
+                'timeout'         => 60,
+            ])->acceptJson();
         }
-
-        return $response;
     }
 
     /**
-     * Handle API request.
+     * Check if credentials are set.
+     *
+     * @return bool
+     */
+    private function hasCredentials() : bool
+    {
+        return strlen($this->config['username'] ?? null)
+            && strlen($this->config['password'] ?? null);
+    }
+
+    /**
+     * Run checks before sending API requests.
+     *
+     * @return void
+     * @throws \Emotality\Panacea\PanaceaException
+     */
+    private function runChecks() : void
+    {
+        if (! $this->hasCredentials()) {
+            // Run: php artisan vendor:publish --provider="Emotality\Panacea\PanaceaMobileServiceProvider"
+            // Add: PANACEA_USERNAME=""
+            // Add: PANACEA_PASSWORD=""
+            throw new PanaceaException('Your PanaceaMobile username and password is required!');
+        }
+    }
+
+    /**
+     * Handle API request to send SMS(es).
      *
      * @param  string  $recipient
      * @param  string  $message
      * @param  string|null  $from
      * @return bool
-     * @throws \Exception
+     * @throws \Emotality\Panacea\PanaceaException
      */
-    private function sendRequest(string $recipient, string $message, string $from = null) : bool
+    public function sendSms(string $recipient, string $message, string $from = null) : bool
     {
+        $this->runChecks();
+
         if (strpos($recipient, '+') !== 0) {
             $recipient = '+'.$recipient;
         }
 
-        $from = $from ?? $this->from ?? null;
+        $from = $from ?? $this->config['from'] ?? null;
 
         if ($from && ! ctype_alnum($from)) {
-            throw new \Exception('PanaceaMobile: The "from" field can only contain alpha numeric characters!');
+            return $this->smsError(sprintf('The "from" field can only contain alpha numeric characters! [%s]', $recipient));
         }
 
-        $parameters = [
+        $response = $this->client->get($this->queryUri('/json', [
             'action'   => 'message_send',
-            'username' => $this->username,
-            'password' => $this->password,
+            'username' => $this->config['username'],
+            'password' => $this->config['password'],
             'from'     => $from,
             'to'       => $recipient,
             'text'     => $message,
-        ];
+        ]));
 
-        $response = $this->client->request('GET', $this->queryUri('/json', $parameters));
+        $json = $response->object();
 
-        $json = json_decode($response->getBody());
-
-        if (isset($json->status) && $json->status != 1) {
+        if ($response->failed() || (isset($json->status) && $json->status != 1)) {
             if (isset($json->details) && ! empty($json->details)) {
                 $message = $json->details;
             } elseif (isset($json->message) && ! empty($json->message)) {
                 $message = $json->message;
             } else {
-                $message = 'Unknown error occurred.';
+                $message = 'SMS failed to send.';
             }
 
-            throw new \Exception($message);
+            $this->smsError(sprintf('%s [%s]', $message, $recipient), $response->status() ?? 1337);
 
             return false;
         }
@@ -165,5 +131,24 @@ class PanaceaMobileAPI
         }
 
         return $uri;
+    }
+
+    /**
+     * Throw exception or log error message.
+     *
+     * @param  string  $message
+     * @param  int  $code
+     * @return bool
+     * @throws \Emotality\Panacea\PanaceaException
+     */
+    private function smsError(string $message, int $code = 1337) : bool
+    {
+        if ($this->config['exceptions']) {
+            throw new PanaceaException($message, $code);
+        } else {
+            \Log::critical(sprintf('PanaceaMobile SMS Error: "%s"', $message));
+        }
+
+        return false;
     }
 }

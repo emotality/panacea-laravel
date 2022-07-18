@@ -2,7 +2,7 @@
 
 namespace Emotality\Panacea;
 
-class PanaceaMessage
+class PanaceaMobileSms
 {
     /**
      * SMS recipients.
@@ -19,7 +19,7 @@ class PanaceaMessage
     protected $message;
 
     /**
-     * PanaceaMessage constructor.
+     * PanaceaMobileSms constructor.
      *
      * @param  string|array|null  $to
      * @param  string|null  $message
@@ -76,18 +76,18 @@ class PanaceaMessage
      * Send SMS(es).
      *
      * @return void
-     * @throws \Exception
+     * @throws \Emotality\Panacea\PanaceaException
      */
     public function send()
     {
         if (! count($this->to)) {
-            throw new \Exception('SMS has no recipient(s) attached.');
+            throw new PanaceaException('SMS has no recipient(s) attached.');
         }
 
         if (! $this->message) {
-            throw new \Exception('SMS message can\'t be empty.');
+            throw new PanaceaException('SMS message can\'t be empty.');
         }
 
-        \PanaceaMobile::smsMany($this->to, $this->message);
+        PanaceaMobileFacade::smsMany($this->to, $this->message);
     }
 }

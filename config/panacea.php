@@ -7,7 +7,7 @@ return [
     | Credentials
     |--------------------------------------------------------------------------
     |
-    | Your PanaceaMobile.com login details.
+    | Your PanaceaMobile.com credentials.
     | Password can also be your API key.
     |
     */
@@ -32,13 +32,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Verify SSL
+    | Exceptions
     |--------------------------------------------------------------------------
     |
-    | If Guzzle (cURL wrapper) should verify the server's SSL certificate.
-    | ONLY switch it off IF you get SSL errors (very rare!)
+    | If these are set to true, response errors from PanaceaMobile API will
+    | throw exceptions instead of just logging them silently.
+    |
+    | Note: If you send an SMS to multiple recipients and exceptions are
+    | enabled, the rest of the recipients will not receive their SMS.
     |
     */
-    'ssl' => env('PANACEA_SSL', true)
+    'exceptions' => false, // Default: false
 
 ];

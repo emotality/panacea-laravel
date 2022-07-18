@@ -6,7 +6,7 @@
     <a href="https://packagist.org/packages/emotality/panacea-laravel"><img src="https://img.shields.io/packagist/dt/emotality/panacea-laravel" alt="Total Downloads"></a>
 </p>
 
-Laravel package for PanaceaMobile API.
+Laravel package to send transactional SMSes via PanaceaMobile.
 
 <p>
     <a href="https://www.panaceamobile.com" target="_blank">
@@ -16,8 +16,8 @@ Laravel package for PanaceaMobile API.
 
 ## Requirements
 
-- PHP 7.0+
-- Laravel 5.5+
+- PHP 7.2+
+- Laravel 7.0+
 
 ## Installation
 
@@ -33,7 +33,7 @@ PANACEA_FROM="<from_name>" // Optional, but required for sending outside ZA
 
 ## Usage
 
-### Send SMS to a single recipient:
+### Sending an SMS to a single recipient:
 
 ```php
 \PanaceaMobile::sms('+27820000001', "1st Line\n2nd Line\n3rd Line");
@@ -43,7 +43,7 @@ Response will be a `bool`, `true` if successful, `false` if unsuccessful.
 
 ---
 
-### Send SMS to multiple recipients:
+### Sending an SMS to multiple recipients:
 
 ```php
 \PanaceaMobile::smsMany(['+27820000001', '+27820000002'], "1st Line\n2nd Line\n3rd Line");
@@ -60,34 +60,33 @@ array:2 [▼
 
 ---
 
-### Notifications:
+### Sending an SMS via notification:
 
 ```php
 namespace App\Notifications;
 
-use Emotality\Panacea\PanaceaChannel;
-use Emotality\Panacea\PanaceaMessage;
+use Emotality\Panacea\PanaceaMobileSms;
+use Emotality\Panacea\PanaceaMobileSmsChannel;
 use Illuminate\Notifications\Notification;
 
 class ExampleNotification extends Notification
 {
+    // Notification channels
     public function via($notifiable)
     {
-        return [PanaceaChannel::class];
+        return [PanaceaMobileSmsChannel::class];
     }
     
-    // Send SMS to a single recipient
-    public function toPanacea($notifiable) // Can also use toSms($notifiable)
+    // Send SMS
+    public function toSms($notifiable) // Can also use toPanacea($notifiable)
     {
-        return (new PanaceaMessage())
+        // Send SMS to a single recipient
+        return (new PanaceaMobileSms())
             ->to($notifiable->mobile) // Assuming $user->mobile
             ->message("1st Line\n2nd Line\n3rd Line");
-    }
-    
-    // Send SMS to multiple recipients
-    public function toPanacea($notifiable) // Can also use toSms($notifiable)
-    {
-        return (new PanaceaMessage())
+            
+        // or send SMS to multiple recipients
+        return (new PanaceaMobileSms())
             ->toMany(['+27820000001', '+27820000002'])
             ->message("1st Line\n2nd Line\n3rd Line");
     }

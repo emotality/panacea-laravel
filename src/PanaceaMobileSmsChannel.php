@@ -4,7 +4,7 @@ namespace Emotality\Panacea;
 
 use Illuminate\Notifications\Notification;
 
-class PanaceaChannel
+class PanaceaMobileSmsChannel
 {
     /**
      * Send the given notification.
@@ -12,6 +12,7 @@ class PanaceaChannel
      * @param  mixed  $notifiable
      * @param  \Illuminate\Notifications\Notification  $notification
      * @return void
+     * @throws \Emotality\Panacea\PanaceaException
      */
     public function send($notifiable, Notification $notification)
     {
@@ -19,8 +20,10 @@ class PanaceaChannel
             $notification->toPanacea($notifiable)->send();
         } elseif (method_exists($notification, 'toSms')) {
             $notification->toSms($notifiable)->send();
+        } elseif (method_exists($notification, 'sms')) {
+            $notification->sms($notifiable)->send();
         } else {
-            throw new \Exception('Method not found in Notification to send SMS.');
+            throw new PanaceaException('toSms() function not found in Notification to send SMS.');
         }
     }
 }

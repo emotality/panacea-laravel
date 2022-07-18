@@ -7,10 +7,12 @@ use Illuminate\Support\Facades\Facade;
 class PanaceaMobile extends Facade
 {
     /**
-     * {@inheritDoc}
+     * Get the registered name of the component.
+     *
+     * @return string
      */
     protected static function getFacadeAccessor()
     {
-        return \Emotality\Panacea\PanaceaMobileAPI::class;
+        return \Emotality\Panacea\PanaceaMobileFacade::class;
     }
 }
