@@ -93,8 +93,8 @@ class PanaceaMobileAPI
             'action'   => 'message_send',
             'username' => $this->config['username'],
             'password' => $this->config['password'],
-            'from'     => $from,
-            'to'       => $recipient,
+            'from'     => ($from ? trim($from) : null),
+            'to'       => trim($recipient),
             'text'     => $message,
         ]));
 

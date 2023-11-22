@@ -12,6 +12,13 @@ class PanaceaMobileSms
     protected $to = [];
 
     /**
+     * SMS sender name.
+     *
+     * @var string|null $from
+     */
+    protected $from = null;
+
+    /**
      * SMS message.
      *
      * @var string $message
@@ -23,13 +30,16 @@ class PanaceaMobileSms
      *
      * @param  string|array|null  $to
      * @param  string|null  $message
+     * @param  string|null  $from
      * @return void
      */
-    public function __construct($to = null, string $message = null)
+    public function __construct($to = null, string $message = null, string $from = null)
     {
         if ($to) {
             $this->to = is_array($to) ? $to : [$to];
         }
+
+        $this->from = $from;
         $this->message = $message;
     }
 
@@ -42,6 +52,19 @@ class PanaceaMobileSms
     public function to(string $to)
     {
         $this->to[] = $to;
+
+        return $this;
+    }
+
+    /**
+     * Add SMS sender name.
+     *
+     * @param  string  $from
+     * @return $this
+     */
+    public function from(string $from)
+    {
+        $this->from = $from;
 
         return $this;
     }
@@ -88,6 +111,6 @@ class PanaceaMobileSms
             throw new PanaceaException('SMS message can\'t be empty.');
         }
 
-        PanaceaMobileFacade::smsMany($this->to, $this->message);
+        PanaceaMobileFacade::smsMany($this->to, $this->message, $this->from);
     }
 }

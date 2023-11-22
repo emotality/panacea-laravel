@@ -28,7 +28,7 @@ Laravel package to send transactional SMSes via PanaceaMobile.
 ```
 PANACEA_USERNAME="<panacea_username>"
 PANACEA_PASSWORD="<panacea_password_or_api_key>"
-PANACEA_FROM="<from_name>" // Optional, but required for sending outside ZA
+PANACEA_FROM="<from_name>" // Optional
 ```
 
 ## Usage
@@ -37,6 +37,8 @@ PANACEA_FROM="<from_name>" // Optional, but required for sending outside ZA
 
 ```php
 \PanaceaMobile::sms('+27820000001', "1st Line\n2nd Line\n3rd Line");
+// or
+\PanaceaMobile::sms('+27820000001', "1st Line\n2nd Line\n3rd Line", 'From Name');
 ```
 
 Response will be a `bool`, `true` if successful, `false` if unsuccessful.
@@ -47,6 +49,8 @@ Response will be a `bool`, `true` if successful, `false` if unsuccessful.
 
 ```php
 \PanaceaMobile::smsMany(['+27820000001', '+27820000002'], "1st Line\n2nd Line\n3rd Line");
+// or
+\PanaceaMobile::smsMany(['+27820000001', '+27820000002'], "1st Line\n2nd Line\n3rd Line", 'From Name');
 ```
 
 Response will be an array where the keys are the recipients' numbers, the values will be booleans:
@@ -82,12 +86,14 @@ class ExampleNotification extends Notification
     {
         // Send SMS to a single recipient
         return (new PanaceaMobileSms())
-            ->to($notifiable->mobile) // Assuming $user->mobile
+            ->to($notifiable->mobile) // Assuming $user->mobile is their mobile number
+            ->from('From Name') // Optional
             ->message("1st Line\n2nd Line\n3rd Line");
             
         // or send SMS to multiple recipients
         return (new PanaceaMobileSms())
             ->toMany(['+27820000001', '+27820000002'])
+            ->from('From Name') // Optional
             ->message("1st Line\n2nd Line\n3rd Line");
     }
 }

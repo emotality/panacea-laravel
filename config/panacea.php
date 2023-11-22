@@ -21,11 +21,9 @@ return [
     | From
     |--------------------------------------------------------------------------
     |
-    | Using PanaceaMobile to send SMSes to certain other countries requires
-    | you to specify a name. This can be left blank if only sending to
-    | local (South African) numbers.
+    | The from name is used for reference in your PanaceaMobile dashboard.
     |
-    | Note: Only alpha numeric values accepted!
+    | Note: Only alphanumeric values are accepted!
     |
     */
     'from' => env('PANACEA_FROM'),
