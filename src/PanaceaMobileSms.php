@@ -59,8 +59,7 @@ class PanaceaMobileSms
     /**
      * Checks if 'to' array is empty.
      *
-     * @param  string  $to
-     * @return $this
+     * @return bool
      */
     public function isToEmpty()
     {
@@ -81,10 +80,9 @@ class PanaceaMobileSms
     }
 
     /**
-     * Checks if 'to' array is empty.
+     * Checks if 'from' property is null.
      *
-     * @param  string  $to
-     * @return $this
+     * @return bool
      */
     public function isFromNull()
     {
