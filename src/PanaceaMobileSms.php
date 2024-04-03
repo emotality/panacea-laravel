@@ -57,6 +57,17 @@ class PanaceaMobileSms
     }
 
     /**
+     * Checks if 'to' array is empty.
+     *
+     * @param  string  $to
+     * @return $this
+     */
+    public function isToEmpty()
+    {
+        return empty($this->to);
+    }
+
+    /**
      * Add SMS sender name.
      *
      * @param  string  $from
