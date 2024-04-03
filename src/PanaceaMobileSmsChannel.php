@@ -34,7 +34,7 @@ class PanaceaMobileSmsChannel
             $message->to($to);
         }
 
-        if (is_null($message->from) && !is_null($from)) {
+        if ($message->isFromNull() && !is_null($from)) {
             $message->from($from);
         }
 

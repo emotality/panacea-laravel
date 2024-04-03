@@ -81,6 +81,17 @@ class PanaceaMobileSms
     }
 
     /**
+     * Checks if 'to' array is empty.
+     *
+     * @param  string  $to
+     * @return $this
+     */
+    public function isFromNull()
+    {
+        return is_null($this->from);
+    }
+
+    /**
      * Add many SMS recipients.
      *
      * @param  array  $to
