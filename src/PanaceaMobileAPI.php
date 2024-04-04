@@ -2,6 +2,10 @@
 
 namespace Emotality\Panacea;
 
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
 class PanaceaMobileAPI
 {
     /**
@@ -25,10 +29,10 @@ class PanaceaMobileAPI
      */
     public function __construct()
     {
-        $this->config = config('panacea') ?? [];
+        $this->config = Config::get('panacea') ?? [];
 
         if ($this->hasCredentials()) {
-            $this->client = \Http::withOptions([
+            $this->client = Http::withOptions([
                 'base_uri'        => 'https://api.panaceamobile.com',
                 'debug'           => false,
                 'verify'          => true,
@@ -44,7 +48,7 @@ class PanaceaMobileAPI
      *
      * @return bool
      */
-    private function hasCredentials() : bool
+    private function hasCredentials(): bool
     {
         return strlen($this->config['username'] ?? null)
             && strlen($this->config['password'] ?? null);
@@ -56,7 +60,7 @@ class PanaceaMobileAPI
      * @return void
      * @throws \Emotality\Panacea\PanaceaException
      */
-    private function runChecks() : void
+    private function runChecks(): void
     {
         if (! $this->hasCredentials()) {
             // Run: php artisan vendor:publish --provider="Emotality\Panacea\PanaceaMobileServiceProvider"
@@ -75,7 +79,7 @@ class PanaceaMobileAPI
      * @return bool
      * @throws \Emotality\Panacea\PanaceaException
      */
-    public function sendSms(string $recipient, string $message, string $from = null) : bool
+    public function sendSms(string $recipient, string $message, string $from = null): bool
     {
         $this->runChecks();
 
@@ -124,7 +128,7 @@ class PanaceaMobileAPI
      * @param  array  $parameters
      * @return string
      */
-    private function queryUri(string $uri, array $parameters = []) : string
+    private function queryUri(string $uri, array $parameters = []): string
     {
         if (count($parameters)) {
             return sprintf('%s?%s', $uri, http_build_query($parameters));
@@ -141,12 +145,12 @@ class PanaceaMobileAPI
      * @return bool
      * @throws \Emotality\Panacea\PanaceaException
      */
-    private function smsError(string $message, int $code = 1337) : bool
+    private function smsError(string $message, int $code = 1337): bool
     {
         if ($this->config['exceptions']) {
             throw new PanaceaException($message, $code);
         } else {
-            \Log::critical(sprintf('PanaceaMobile SMS Error: "%s"', $message));
+            Log::critical(sprintf('PanaceaMobile SMS Error: "%s"', $message));
         }
 
         return false;

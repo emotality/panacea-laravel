@@ -15,7 +15,7 @@ class PanaceaMobileSmsChannel
      * @return void
      * @throws \Emotality\Panacea\PanaceaException
      */
-    public function send($notifiable, Notification $notification)
+    public function send($notifiable, Notification $notification): void
     {
         $to = $notifiable->routeNotificationFor('panacea', $notification);
         $from = Config::get('panacea.from');
@@ -30,11 +30,11 @@ class PanaceaMobileSmsChannel
             throw new PanaceaException('Appropriate method to format the SMS message not found in Notification.');
         }
 
-        if ($message->isToEmpty() && !is_null($to)) {
+        if ($message->isToEmpty() && ! is_null($to)) {
             $message->to($to);
         }
 
-        if ($message->isFromNull() && !is_null($from)) {
+        if ($message->isFromNull() && ! is_null($from)) {
             $message->from($from);
         }
 

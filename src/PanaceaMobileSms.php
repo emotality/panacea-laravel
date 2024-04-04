@@ -49,7 +49,7 @@ class PanaceaMobileSms
      * @param  string  $to
      * @return $this
      */
-    public function to(string $to)
+    public function to(string $to): self
     {
         $this->to[] = $to;
 
@@ -61,7 +61,7 @@ class PanaceaMobileSms
      *
      * @return bool
      */
-    public function isToEmpty()
+    public function isToEmpty(): bool
     {
         return empty($this->to);
     }
@@ -72,7 +72,7 @@ class PanaceaMobileSms
      * @param  string  $from
      * @return $this
      */
-    public function from(string $from)
+    public function from(string $from): self
     {
         $this->from = $from;
 
@@ -84,7 +84,7 @@ class PanaceaMobileSms
      *
      * @return bool
      */
-    public function isFromNull()
+    public function isFromNull(): bool
     {
         return is_null($this->from);
     }
@@ -95,7 +95,7 @@ class PanaceaMobileSms
      * @param  array  $to
      * @return $this
      */
-    public function toMany(array $to)
+    public function toMany(array $to): self
     {
         $this->to = array_merge($this->to, $to);
 
@@ -108,7 +108,7 @@ class PanaceaMobileSms
      * @param  string  $message
      * @return $this
      */
-    public function message(string $message)
+    public function message(string $message): self
     {
         $this->message = $message;
 
@@ -121,7 +121,7 @@ class PanaceaMobileSms
      * @return void
      * @throws \Emotality\Panacea\PanaceaException
      */
-    public function send()
+    public function send(): void
     {
         if (! count($this->to)) {
             throw new PanaceaException('SMS has no recipient(s) attached.');

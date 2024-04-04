@@ -2,6 +2,7 @@
 
 namespace Emotality\Panacea;
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 
 class PanaceaMobileServiceProvider extends ServiceProvider
@@ -27,7 +28,7 @@ class PanaceaMobileServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../config/panacea.php' => config_path('panacea.php'),
+                __DIR__.'/../config/panacea.php' => App::configPath('panacea.php'),
             ], 'config');
         }
     }

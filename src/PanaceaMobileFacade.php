@@ -2,6 +2,8 @@
 
 namespace Emotality\Panacea;
 
+use Illuminate\Support\Facades\App;
+
 class PanaceaMobileFacade
 {
     /**
@@ -9,9 +11,9 @@ class PanaceaMobileFacade
      *
      * @return \Emotality\Panacea\PanaceaMobileAPI
      */
-    private static function api()
+    private static function api(): PanaceaMobileAPI
     {
-        return app(PanaceaMobileAPI::class);
+        return App::get(PanaceaMobileAPI::class);
     }
 
     /**
@@ -23,7 +25,7 @@ class PanaceaMobileFacade
      * @return bool
      * @throws \Emotality\Panacea\PanaceaException
      */
-    public static function sms(string $recipient, string $message, string $from = null) : bool
+    public static function sms(string $recipient, string $message, string $from = null): bool
     {
         return self::api()->sendSms($recipient, $message, $from);
     }
@@ -37,7 +39,7 @@ class PanaceaMobileFacade
      * @return array<string, bool>
      * @throws \Emotality\Panacea\PanaceaException
      */
-    public static function smsMany(array $recipients, string $message, string $from = null) : array
+    public static function smsMany(array $recipients, string $message, string $from = null): array
     {
         $response = [];
 
