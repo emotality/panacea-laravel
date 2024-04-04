@@ -3,6 +3,7 @@
 namespace Emotality\Panacea;
 
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Config;
 
 class PanaceaMobileSmsChannel
 {
@@ -16,14 +17,27 @@ class PanaceaMobileSmsChannel
      */
     public function send($notifiable, Notification $notification)
     {
+        $to = $notifiable->routeNotificationFor('panacea', $notification);
+        $from = Config::get('panacea.from');
+
         if (method_exists($notification, 'toPanacea')) {
-            $notification->toPanacea($notifiable)->send();
+            $message = $notification->toPanacea($notifiable);
         } elseif (method_exists($notification, 'toSms')) {
-            $notification->toSms($notifiable)->send();
+            $message = $notification->toSms($notifiable);
         } elseif (method_exists($notification, 'sms')) {
-            $notification->sms($notifiable)->send();
+            $message = $notification->sms($notifiable);
         } else {
-            throw new PanaceaException('toSms() function not found in Notification to send SMS.');
+            throw new PanaceaException('Appropriate method to format the SMS message not found in Notification.');
         }
+
+        if ($message->isToEmpty() && !is_null($to)) {
+            $message->to($to);
+        }
+
+        if ($message->isFromNull() && !is_null($from)) {
+            $message->from($from);
+        }
+
+        $message->send();
     }
 }
