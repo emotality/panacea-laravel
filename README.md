@@ -84,17 +84,49 @@ class ExampleNotification extends Notification
     // Send SMS
     public function toSms($notifiable) // Can also use toPanacea($notifiable)
     {
-        // Send SMS to a single recipient
+        // Send SMS without "to", this value will automatically be fetched from
+        // the "routeNotificationForPanacea" method in your notifiable entity.
+        // See the "Routing SMS Notifications" section below.
+        return (new PanaceaMobileSms())->message("1st Line\n2nd Line\n3rd Line");
+        
+        // or send SMS to a single recipient, specifying the "to" value
         return (new PanaceaMobileSms())
             ->to($notifiable->mobile) // Assuming $user->mobile is their mobile number
-            ->from('From Name') // Optional
+            ->from('From Name') // Optional. Will override config's "from" value.
             ->message("1st Line\n2nd Line\n3rd Line");
             
         // or send SMS to multiple recipients
         return (new PanaceaMobileSms())
             ->toMany(['+27820000001', '+27820000002'])
-            ->from('From Name') // Optional
+            ->from('From Name') // Optional. Will override config's "from" value.
             ->message("1st Line\n2nd Line\n3rd Line");
+    }
+}
+```
+
+### Routing SMS Notifications
+
+To route Panacea notifications to the proper phone number, define a `routeNotificationForPanacea` method on your notifiable entity:
+
+```php
+namespace App\Models;
+ 
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+ 
+class User extends Authenticatable
+{
+    use Notifiable;
+ 
+    /**
+     * Route notifications for the Panacea channel.
+     *
+     * @param  \Illuminate\Notifications\Notification  $notification
+     * @return string
+     */
+    public function routeNotificationForPanacea($notification)
+    {
+        return $this->mobile;
     }
 }
 ```
