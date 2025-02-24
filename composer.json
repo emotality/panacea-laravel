@@ -24,6 +24,9 @@
         "illuminate/http": ">=7.0.0",
         "illuminate/support": ">=7.0.0"
     },
+    "require-dev": {
+        "laravel/pint": "^1.21"
+    },
     "autoload": {
         "psr-4": {
             "Emotality\\Panacea\\": "src/"
@@ -38,6 +41,9 @@
                 "PanaceaMobile": "Emotality\\Panacea\\PanaceaMobile"
             }
         }
+    },
+    "config": {
+        "sort-packages": true
     },
     "minimum-stability": "dev",
     "prefer-stable": true

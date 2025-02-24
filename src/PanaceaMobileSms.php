@@ -7,21 +7,21 @@ class PanaceaMobileSms
     /**
      * SMS recipients.
      *
-     * @var array $to
+     * @var array
      */
     protected $to = [];
 
     /**
      * SMS sender name.
      *
-     * @var string|null $from
+     * @var string|null
      */
     protected $from = null;
 
     /**
      * SMS message.
      *
-     * @var string $message
+     * @var string
      */
     protected $message;
 
@@ -29,11 +29,9 @@ class PanaceaMobileSms
      * PanaceaMobileSms constructor.
      *
      * @param  string|array|null  $to
-     * @param  string|null  $message
-     * @param  string|null  $from
      * @return void
      */
-    public function __construct($to = null, string $message = null, string $from = null)
+    public function __construct($to = null, ?string $message = null, ?string $from = null)
     {
         if ($to) {
             $this->to = is_array($to) ? $to : [$to];
@@ -46,7 +44,6 @@ class PanaceaMobileSms
     /**
      * Add SMS recipient.
      *
-     * @param  string  $to
      * @return $this
      */
     public function to(string $to): self
@@ -58,8 +55,6 @@ class PanaceaMobileSms
 
     /**
      * Checks if 'to' array is empty.
-     *
-     * @return bool
      */
     public function isToEmpty(): bool
     {
@@ -69,7 +64,6 @@ class PanaceaMobileSms
     /**
      * Add SMS sender name.
      *
-     * @param  string  $from
      * @return $this
      */
     public function from(string $from): self
@@ -81,8 +75,6 @@ class PanaceaMobileSms
 
     /**
      * Checks if 'from' property is null.
-     *
-     * @return bool
      */
     public function isFromNull(): bool
     {
@@ -92,7 +84,6 @@ class PanaceaMobileSms
     /**
      * Add many SMS recipients.
      *
-     * @param  array  $to
      * @return $this
      */
     public function toMany(array $to): self
@@ -105,7 +96,6 @@ class PanaceaMobileSms
     /**
      * Set SMS body.
      *
-     * @param  string  $message
      * @return $this
      */
     public function message(string $message): self
@@ -118,7 +108,6 @@ class PanaceaMobileSms
     /**
      * Send SMS(es).
      *
-     * @return void
      * @throws \Emotality\Panacea\PanaceaException
      */
     public function send(): void

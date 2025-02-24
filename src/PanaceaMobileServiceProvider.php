@@ -15,7 +15,7 @@ class PanaceaMobileServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(PanaceaMobileAPI::class, function () {
-            return new PanaceaMobileAPI();
+            return new PanaceaMobileAPI;
         });
     }
 

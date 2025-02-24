@@ -8,8 +8,6 @@ class PanaceaMobileFacade
 {
     /**
      * PanaceaMobile API class.
-     *
-     * @return \Emotality\Panacea\PanaceaMobileAPI
      */
     private static function api(): PanaceaMobileAPI
     {
@@ -19,13 +17,9 @@ class PanaceaMobileFacade
     /**
      * Send SMS to a single recipient.
      *
-     * @param  string  $recipient
-     * @param  string  $message
-     * @param  string|null  $from
-     * @return bool
      * @throws \Emotality\Panacea\PanaceaException
      */
-    public static function sms(string $recipient, string $message, string $from = null): bool
+    public static function sms(string $recipient, string $message, ?string $from = null): bool
     {
         return self::api()->sendSms($recipient, $message, $from);
     }
@@ -33,13 +27,10 @@ class PanaceaMobileFacade
     /**
      * Send SMS to multiple recipients.
      *
-     * @param  array  $recipients
-     * @param  string  $message
-     * @param  string|null  $from
      * @return array<string, bool>
      * @throws \Emotality\Panacea\PanaceaException
      */
-    public static function smsMany(array $recipients, string $message, string $from = null): array
+    public static function smsMany(array $recipients, string $message, ?string $from = null): array
     {
         $response = [];
 

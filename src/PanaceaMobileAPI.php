@@ -45,8 +45,6 @@ class PanaceaMobileAPI
 
     /**
      * Check if credentials are set.
-     *
-     * @return bool
      */
     private function hasCredentials(): bool
     {
@@ -57,7 +55,6 @@ class PanaceaMobileAPI
     /**
      * Run checks before sending API requests.
      *
-     * @return void
      * @throws \Emotality\Panacea\PanaceaException
      */
     private function runChecks(): void
@@ -73,13 +70,9 @@ class PanaceaMobileAPI
     /**
      * Handle API request to send SMS(es).
      *
-     * @param  string  $recipient
-     * @param  string  $message
-     * @param  string|null  $from
-     * @return bool
      * @throws \Emotality\Panacea\PanaceaException
      */
-    public function sendSms(string $recipient, string $message, string $from = null): bool
+    public function sendSms(string $recipient, string $message, ?string $from = null): bool
     {
         $this->runChecks();
 
@@ -123,10 +116,6 @@ class PanaceaMobileAPI
 
     /**
      * Build query with parameters.
-     *
-     * @param  string  $uri
-     * @param  array  $parameters
-     * @return string
      */
     private function queryUri(string $uri, array $parameters = []): string
     {
@@ -140,9 +129,6 @@ class PanaceaMobileAPI
     /**
      * Throw exception or log error message.
      *
-     * @param  string  $message
-     * @param  int  $code
-     * @return bool
      * @throws \Emotality\Panacea\PanaceaException
      */
     private function smsError(string $message, int $code = 1337): bool

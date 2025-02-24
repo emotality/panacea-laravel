@@ -11,8 +11,6 @@ class PanaceaMobileSmsChannel
      * Send the given notification.
      *
      * @param  mixed  $notifiable
-     * @param  \Illuminate\Notifications\Notification  $notification
-     * @return void
      * @throws \Emotality\Panacea\PanaceaException
      */
     public function send($notifiable, Notification $notification): void
