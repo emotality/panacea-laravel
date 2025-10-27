@@ -21,9 +21,9 @@ return [
     | From
     |--------------------------------------------------------------------------
     |
-    | The from name is used for reference in your PanaceaMobile dashboard.
-    |
-    | Note: Only alphanumeric values are accepted!
+    | The From value can be alpha or numeric and will not be displayed on the
+    | handset unless it is a sender ID requirement for international messages
+    | outside South Africa. (Will be displayed in the dashboard)
     |
     */
     'from' => env('PANACEA_FROM'),

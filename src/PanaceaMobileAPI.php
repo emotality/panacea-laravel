@@ -33,7 +33,7 @@ class PanaceaMobileAPI
 
         if ($this->hasCredentials()) {
             $this->client = Http::withOptions([
-                'base_uri'        => 'https://api.panaceamobile.com',
+                'base_uri'        => 'https://eu-api.panaceamobile.com',
                 'debug'           => false,
                 'verify'          => true,
                 'version'         => 2.0,
