@@ -19,17 +19,24 @@
         }
     ],
     "require": {
-        "php": ">=7.2.5",
+        "php": "^8.1",
         "ext-json": "*",
-        "illuminate/http": ">=7.0.0",
-        "illuminate/support": ">=7.0.0"
+        "illuminate/http": ">10.0",
+        "illuminate/support": ">10.0"
     },
     "require-dev": {
-        "laravel/pint": "^1.21"
+        "laravel/pint": "^1.15",
+        "orchestra/testbench": "^8.37 || ^9.17 || ^10.11 || ^11.1",
+        "pestphp/pest": "^2.0.2 || ^3.8 || ^4.6 || 5.x-dev"
     },
     "autoload": {
         "psr-4": {
             "Emotality\\Panacea\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Emotality\\Panacea\\Tests\\": "tests/"
         }
     },
     "extra": {
@@ -43,6 +50,9 @@
         }
     },
     "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
         "sort-packages": true
     },
     "minimum-stability": "dev",

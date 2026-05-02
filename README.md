@@ -14,10 +14,10 @@ Laravel package to send transactional SMSes via PanaceaMobile.
     </a>
 </p>
 
-## Requirements
+## Minimum Requirements
 
-- PHP 7.2+
-- Laravel 7.0+
+- PHP 8.1
+- Laravel 10
 
 ## Installation
 

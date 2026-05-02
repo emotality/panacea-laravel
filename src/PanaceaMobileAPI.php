@@ -2,6 +2,7 @@
 
 namespace Emotality\Panacea;
 
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -48,8 +49,8 @@ class PanaceaMobileAPI
      */
     private function hasCredentials(): bool
     {
-        return strlen($this->config['username'] ?? null)
-            && strlen($this->config['password'] ?? null);
+        return strlen((string) ($this->config['username'] ?? '')) > 0
+            && strlen((string) ($this->config['password'] ?? '')) > 0;
     }
 
     /**
@@ -133,7 +134,7 @@ class PanaceaMobileAPI
      */
     private function smsError(string $message, int $code = 1337): bool
     {
-        if ($this->config['exceptions']) {
+        if (($this->config['exceptions'] ?? false) === true) {
             throw new PanaceaException($message, $code);
         } else {
             Log::critical(sprintf('PanaceaMobile SMS Error: "%s"', $message));

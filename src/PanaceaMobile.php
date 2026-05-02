@@ -13,6 +13,6 @@ class PanaceaMobile extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return \Emotality\Panacea\PanaceaMobileFacade::class;
+        return PanaceaMobileFacade::class;
     }
 }
