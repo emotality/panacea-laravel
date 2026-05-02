@@ -2,7 +2,6 @@
 
 namespace Emotality\Panacea;
 
-use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
